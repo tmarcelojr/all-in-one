@@ -17,15 +17,11 @@ import './App.css'
 function App() {
   const [user, setUser] = useState('David')
 
-  const handleUser = () => {
-    setUser('Evan')
-  }
-
   console.log('App', user)
   return (
     <div className="App">
 
-      <UserContext.Provider value={{user, handleUser}}>
+      <UserContext.Provider value={user}>
         <Nav />
 
         {/* we were nesting before */}
