@@ -1,100 +1,49 @@
-import { useState } from 'react'
-import axios from 'axios'
-import NASAData from './components/NASAData'
+// imports
+import React, { useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
+// components
+import Nav from './components/Nav'
+import Footer from './components/Footer'
+// pages
+import Home from './pages/Home'
+import NASAList from './pages/NASAList.js'
+import About from './pages/About'
+import Giphy from './pages/Giphy'
+// contexts
+import UserContext from './contexts/UserContext'
+// css
 import './App.css'
 
-// function declaration
 function App() {
-  // Functional components are considered stateless
-  // Class components are considered stateful
+  const [user, setUser] = useState('David')
 
-  // Write your state towards the very top of your component
-  // 1.) import useState at the top of your code
-  // 2.) First argument = the name of your state
-  // 3.) Second arg = your method to update your state
-  // const [state, setState] = useState(initialState)
-  const [like, setLike] = useState('unliked')
-  const [userInput, setUserInput] = useState('')
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(false)
-
-  // In functional components, we no longer have to use the keyword 'this'
-
-  const toggle = () => {
-    console.log('toggling')
-    // :(
-    // setData('liked') ? setData('unliked') : setData('liked')
-
-    // ternary
-    // data === 'unliked' ? setData('liked') : setData('unliked')
-
-    // reg if/else
-    if (like === 'unliked') {
-      setLike('liked')
-    } else {
-      setLike('unliked')
-    }
+  const handleUser = () => {
+    setUser('Evan')
   }
 
-  const handleChange = (e) => {
-    // console.log('handling change', e.target.value)
-    setUserInput(e.target.value)
-  }
-
-  const handleSubmit = e => {
-    e.preventDefault()
-    console.log('submitting')
-
-    setLoading(true)
-
-    // Any AJAX calls/HTTP REQUEST using axios/fetch will return a Promise => response
-    axios.get(`https://images-api.nasa.gov/search?q=${userInput}`)
-      // whenever we get a response back, only then will then() run
-      // we no longer need to use json()
-      .then(response => {
-        setData(response.data.collection.items)
-        setLoading(false)
-      })
-      .catch(err => console.error(err))
-
-  }
-
+  console.log('App', user)
   return (
     <div className="App">
-      <h1>NASAgram</h1>
-      {console.log('state', data)}
-      {/* CONTROLLED FORM - meaning handle our change via state */}
-      <form onSubmit={handleSubmit}>
-        <label htmlFor='userInput'>Search: </label>
-        <input
-          type='text'
-          id='userInput'
-          name='userInput'
-          onChange={handleChange}
-          value={userInput}
-        />
-        <input type="submit" value='submit' />
-      </form>
 
-      {/* <button onClick={toggle}>{like}</button> */}
+      <UserContext.Provider value={{user, handleUser}}>
+        <Nav />
 
-      {
-        loading
-          ?
-          <img src="https://c.tenor.com/tEBoZu1ISJ8AAAAC/spinning-loading.gif" alt="" />
-          :
-          <div id='nasa-container'>
-            {
-              data.map((item) => {
-                return (
-                  <NASAData item={item} />
-                )
-              })
-            }
-          </div>
-      }
+        {/* we were nesting before */}
+        {/* <Route>
 
+  </Route> */}
 
+        {/* the component that changes in our browser is inside the Routes component, Routes is the new name for Switch in v6. */}
+
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='nasalist' element={<NASAList />} />
+          <Route path='about' element={<About />} />
+          <Route path='giphy' element={<Giphy />} />
+        </Routes>
+
+        <Footer />
+      </UserContext.Provider>
 
     </div>
   );
